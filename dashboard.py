@@ -22,11 +22,13 @@ def get_id(value):
     return val_str[:11]
 
 try:
-    # 1. LOAD AND CLEAN (This kills the "nan" error)
+    # 1. LOAD AND CLEAN (This kills the "nan" error and out-of-bounds crash)
     df = pd.read_excel("Master_Video_Tracker.xlsx")
     
-    # This line specifically removes any row that doesn't have a Video Title
+    # This line specifically removes any row that doesn't have a real Video Title
     df = df.dropna(subset=[df.columns[0]]).reset_index(drop=True)
+    # This removes any rows where the title is actually the string "nan"
+    df = df[df[df.columns[0]].astype(str).lower() != 'nan'].reset_index(drop=True)
     
     view_col = next((c for c in df.columns if 'view' in c.lower()), df.columns[1])
     title_col = next((c for c in df.columns if 'title' in c.lower()), df.columns[0])
