@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="AI Edge - Final A/B Test", layout="wide")
+st.set_page_config(page_title="AI Edge - Final A/B Pro", layout="wide")
 
-# Exact CSS for the professional Iman Gadzhi look
+# Exact CSS to match the vertical Iman Gadzhi layout
 st.markdown("""
     <style>
-    .metric-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #30363d; font-size: 20px; }
+    .metric-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #30363d; font-size: 20px; }
     .metric-label { color: #8b949e; font-weight: bold; }
     .metric-value { color: #ffffff; font-weight: bold; text-align: center; width: 100%; }
     .ctr-highlight { background-color: #f7e018; color: black; padding: 4px 10px; border-radius: 4px; font-weight: bold; }
@@ -22,7 +22,7 @@ def get_id(value):
     return val_str[:11]
 
 try:
-    # 1. Load and Clean (removes blank rows to prevent 'out-of-bounds' errors)
+    # 1. Load and Clean (Removes 'nan' rows to stop the crash)
     df = pd.read_excel("Master_Video_Tracker.xlsx")
     df = df.dropna(how='all').dropna(subset=[df.columns[0]]).reset_index(drop=True)
     
@@ -45,7 +45,7 @@ try:
     col_labels, col_1, col_2 = st.columns([0.6, 1, 1])
 
     with col_labels:
-        st.write("## ") # Top spacer
+        st.write("## ") # Top alignment spacer
         st.markdown('<div style="height: 420px;"></div>', unsafe_allow_html=True)
         st.markdown('<div class="metric-row"><span class="metric-label">Views</span></div>', unsafe_allow_html=True)
         st.markdown('<div class="metric-row"><span class="metric-label">CTR</span></div>', unsafe_allow_html=True)
@@ -59,6 +59,7 @@ try:
         st.image(f"https://img.youtube.com/vi/{get_id(v1[id_col])}/hqdefault.jpg", use_container_width=True)
         st.write(f"**{v1[title_col]}**")
         
+        # All extra stats added here
         st.markdown(f'<div class="metric-row"><span class="metric-value">{int(v1[view_col]):,}</span></div>', unsafe_allow_html=True)
         st.markdown('<div class="metric-row"><span class="metric-value"><span class="ctr-highlight">5.85</span></span></div>', unsafe_allow_html=True)
         st.markdown('<div class="metric-row"><span class="metric-value">23,394</span></div>', unsafe_allow_html=True)
@@ -72,6 +73,7 @@ try:
         st.image(f"https://img.youtube.com/vi/{get_id(v2[id_col])}/hqdefault.jpg", use_container_width=True)
         st.write(f"**{v2[title_col]}**")
         
+        # All extra stats added here
         st.markdown(f'<div class="metric-row"><span class="metric-value">{int(v2[view_col]):,}</span></div>', unsafe_allow_html=True)
         st.markdown('<div class="metric-row"><span class="metric-value"><span class="ctr-highlight">4.46</span></span></div>', unsafe_allow_html=True)
         st.markdown('<div class="metric-row"><span class="metric-value">17,429</span></div>', unsafe_allow_html=True)
@@ -81,3 +83,4 @@ try:
 
 except Exception as e:
     st.error(f"Something went wrong: {e}")
+    
