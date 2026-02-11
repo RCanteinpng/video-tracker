@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="AI Edge - A/B Test Pro", layout="wide")
+st.set_page_config(page_title="AI Edge - Final A/B Test", layout="wide")
 
 # Exact CSS for the professional Iman Gadzhi look
 st.markdown("""
@@ -22,11 +22,10 @@ def get_id(value):
     return val_str[:11]
 
 try:
-    # 1. Load and Clean (CRITICAL: removes 'nan' rows)
+    # 1. Load and Clean (removes blank rows to prevent 'out-of-bounds' errors)
     df = pd.read_excel("Master_Video_Tracker.xlsx")
     df = df.dropna(how='all').dropna(subset=[df.columns[0]]).reset_index(drop=True)
     
-    # Auto-detect columns
     view_col = next((c for c in df.columns if 'view' in c.lower()), df.columns[1])
     title_col = next((c for c in df.columns if 'title' in c.lower()), df.columns[0])
     id_col = next((c for c in df.columns if any(x in c.lower() for x in ['id', 'video', 'content'])), df.columns[0])
@@ -42,4 +41,43 @@ try:
 
     st.title("🎯 AI Edge Content A/B Performance")
 
-    #
+    # 3. The Comparison Grid
+    col_labels, col_1, col_2 = st.columns([0.6, 1, 1])
+
+    with col_labels:
+        st.write("## ") # Top spacer
+        st.markdown('<div style="height: 420px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-label">Views</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-label">CTR</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-label">Impressions</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-label">AVD</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-label">AVD * CTR</span></div>', unsafe_allow_html=True)
+
+    with col_1:
+        st.markdown('<div class="winner-box">', unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center; color: #28a745;'>🏆 WINNER</h3>", unsafe_allow_html=True)
+        st.image(f"https://img.youtube.com/vi/{get_id(v1[id_col])}/hqdefault.jpg", use_container_width=True)
+        st.write(f"**{v1[title_col]}**")
+        
+        st.markdown(f'<div class="metric-row"><span class="metric-value">{int(v1[view_col]):,}</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value"><span class="ctr-highlight">5.85</span></span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value">23,394</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value">6:04</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value">21,330.27</span></div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col_2:
+        st.markdown('<div class="challenger-box">', unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center; color: #8b949e;'>📊 CHALLENGER</h3>", unsafe_allow_html=True)
+        st.image(f"https://img.youtube.com/vi/{get_id(v2[id_col])}/hqdefault.jpg", use_container_width=True)
+        st.write(f"**{v2[title_col]}**")
+        
+        st.markdown(f'<div class="metric-row"><span class="metric-value">{int(v2[view_col]):,}</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value"><span class="ctr-highlight">4.46</span></span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value">17,429</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value">5:59</span></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-row"><span class="metric-value">16,041.33</span></div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+except Exception as e:
+    st.error(f"Something went wrong: {e}")
